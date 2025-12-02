@@ -4,6 +4,7 @@
 Plan and execute collision free motion for a robot from point A → B in a 2D workspace with circular and rectangular obstacles, using sampling-based motion planning, spline trajectories, and PD control.
 
 **TODO:**
+
 Setup and Foundation
   - Define start and end goals (in task/joint space)
   - Decide planning method (task space vs config space)
