@@ -7,7 +7,7 @@ Plan and execute collision free motion for a robot from point A → B in a 2D wo
 
 Setup and Foundation
   - Define start and end goals (in task/joint space)
-  - Decide planning method (task space vs config space)\
+  - Decide planning method (task space vs config space)
 
 Model
   - Define model (joint vars, workspace, links)
