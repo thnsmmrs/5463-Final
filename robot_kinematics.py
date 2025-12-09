@@ -1,14 +1,10 @@
-"""
-Robot Kinematics and Helper Functions to integrate with obstacle_detection.py and rrt.py
-
-"""
 
 import numpy as np
 import cv2
 
 # Robot model
 class Robot3R:
-    def __init__(self, link_lengths, base_position):
+    def initialize(self, link_lengths, base_position):
         self.L1 = link_lengths[0]
         self.L2 = link_lengths[1]
         self.L3 = link_lengths[2]
