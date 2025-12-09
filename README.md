@@ -25,19 +25,21 @@ https://github.com/nimRobotics/RRT/blob/master/rrt.py
 
 https://github.com/nimRobotics/RRT/blob/master/rrt.py
 
-*12/7* (45 mins)
+*12/7* (1 hr)
 - Krish did Morphology research and how to implement it i.e. cleaning up obstacle detection (https://docs.opencv.org/4.x/d9/d61/tutorial_py_morphological_ops.html):
   * Researched OpenCV morphological operations for obstacle mask cleanup
-  * Opening (cv2.MORPH_OPEN): Removes noise through erosion -> dilation
-  * Closing (cv2.MORPH_CLOSE): Fills holes through dilation -> erosion
-  * Dilation: Adds safety margin around detected obstacles
-  * Contour filtering: removes small artifacts below threshold
+  * Opening (cv2.MORPH_OPEN): Removes camera noise through erosion -> dilation
+  * Closing (cv2.MORPH_CLOSE): Fills holes in obstacles through dilation -> erosion
+  * Dilation: Adds safety margin around detected obstacles (2 iterations, 5x5 kernel)
+  * Contour filtering: removes small artifacts below threshold (100 pixel threshold)
   * Will be implemented in the robot_kinematics.py file
-  * TLDR: camera sees noise and weird artifacts -> implement filters to clean up obstacle mask -> removes small dots, fills holes, adds safety space around obstacles -> uses OpenCV morphology: Opening, Closing, Erosion, Dilation
+  * TLDR: camera sees noise and weird artifacts -> implement filters to clean up obstacle mask -> removes small dots, fills holes, adds safety space around obstacles -> uses OpenCV morphology: Opening, Closing, Erosion, Dilation, result is a clean obstacle mask utilizing morphology
 
 *12/8* (30 mins)
 - Ethan modeled and printed camera mounting assembly for optimal planar object detection
 
+*12/9* (1 hour 30 mins)
+- Krish worked on the robot_kinematics.py file, implementing FK and IK equations and working on the .pdf file with all of the equations and overall solving process
 
 Left todo:
 - Morphology on obstacle mask
