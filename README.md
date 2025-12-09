@@ -34,6 +34,9 @@ https://github.com/nimRobotics/RRT/blob/master/rrt.py
   * Contour filtering: removes small artifacts below threshold
   * Will be implemented in the robot_kinematics.py file
   * TLDR: camera sees noise and weird artifacts -> implement filters to clean up obstacle mask -> removes small dots, fills holes, adds safety space around obstacles -> uses OpenCV morphology: Opening, Closing, Erosion, Dilation
+*12/8* (30 mins)
+- Ethan modeled and printed camera mounting assembly for optimal planar object detection
+
 
 Left todo:
 - Morphology on obstacle mask
