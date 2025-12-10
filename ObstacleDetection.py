@@ -36,25 +36,23 @@ while True:
     white = cv2.inRange(color_hsv, (0,0,50), (180,40,255))
     fg_mask = cv2.bitwise_not(white)
 
-    
-    #fg_mask = improve_obstacle_mask(fg_mask, 100)
     #implementing improve obstacle mask function to clean up mask using morphology
     obstacle_mask = fg_mask.copy()
     obstacle_mask = improve_obstacle_mask(obstacle_mask)
-    #obstacle_mask = cv2.bitwise_not(fg_mask)
+    obstacle_mask = cv2.bitwise_not(fg_mask)
     overlay = frame.copy()
     overlay[obstacle_mask == 255] = (255, 255, 255)  # Highlight obstacles in red (can change color)
     vis = cv2.addWeighted(frame, overlayStrength, overlay, 1 - overlayStrength, 0)
     cv2.circle(vis, start, 3, (0,0,255), -1) #params as defined in circle function
     if goal != None:
-        cv2.circle(vis, goal, 3, (40,0,255), -1)
+        cv2.circle(vis, goal, 3, (0,0,255), -1)
     #drawing start point and goal point
     #Overlay outputs the detected obstacles on the original input frame
-        path = rrt(obstacle_mask, start, goal, 100)
-        print(path)
+        path = rrt(obstacle_mask, start, goal, 20)
+        for (x, y) in path:
+            cv2.circle(vis, (x, y), 5, (255, 0, 0), -1)
     cv2.imshow("Overlay", vis)
-    #print(path) #debug
-    cv2.imshow("Obstacle Mask", obstacle_mask) #improved qual
+    #cv2.imshow("Obstacle Mask", obstacle_mask) #improved qual
 
     
     if cv2.waitKey(1) & 0xFF == 27: #ESC to end program
