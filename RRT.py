@@ -1,7 +1,8 @@
 import numpy as np
 import math
 import random
-
+from robot_kinematics import Robot3R
+link = False
 #RRT function written by Ethan. Inputs include start point, end point, step size
 #which would be like increment length of a tree (distance between points)
 # and the obstacle mask including a white background and obstacles in black
@@ -18,6 +19,31 @@ import random
 #https://github.com/nimRobotics/RRT
 #https://graham-clifford.com/rrt-algorithm/#:~:text=usage:%20rrt.py%20%5B%2Dh,planning%20domain%20Output:%20the%20RRT
 #https://www.youtube.com/watch?v=OXikozpLFGo
+
+if link:
+    def links_col_check(q, robot, frame, samples):
+    #Using 3R parameters and robot_kinematics.py to check for obstacle collision
+    #checks for link collisions at given joint snapshot q. still need a function
+    #that checks for nearby nodes continuously   
+        points = robot.forward_kinematics(q[0],q[1],q[2])
+        links = [(points[0], points[1]), (points[1], points[2]), (points[2], points[3])]
+        for (p1,p2) in links:
+            if not col_check(p1,p2, frame, samples):
+                return False
+        return True
+
+    def cont_links_col_check(q_near, q_new, robot, frame, K, samples):
+        #K is number of interpolation steps 
+        for i in range(K+1):
+            t = i/float(K)
+            q_interp = (
+                q_near[0] + t*(q_new[0] - q_near[0]),
+                q_near[1] + t*(q_new[1] - q_near[1]),
+                q_near[2] + t*(q_new[2] - q_near[2]),
+            )
+            if not links_col_check(q_interp, robot, frame, samples):
+                return False
+        return True
 
 def is_free(x,y,obstacle_mask):
     h,w = obstacle_mask.shape
@@ -100,11 +126,14 @@ def build_path(nodes, parents, goal_idx):
 
 
 #function builds path of confirmed nodes that will be the returned variable
-def rrt(frame, start, end, steps):
+
+def rrt(frame, start, end, steps, robot):
     nodes = [start]
     parents = [-1]
     num = 50 #sample of collision along edges
     max_i = 1000 #max iterations in case no path is ever found
+    link_samples = 20 # num samples of link checked 
+    K = 10 #interpolation for link edge collision checks 
 
     for i in range(max_i):
         if random.random() < 0.1:
@@ -123,6 +152,17 @@ def rrt(frame, start, end, steps):
             continue
         if not col_check(p_near, p_new, frame, num):
             continue
+        if link:
+            q_near = robot.inverse_kinematics(p_near[0], p_near[1])
+            q_new = robot.inverse_kinematics(p_new[0], p_new[1])
+            #getting joint vars to be used in collision checks
+            if q_near is None or q_new is None:
+                continue #if unreachable
+            if not links_col_check(q_new, robot, frame, link_samples):
+                continue
+            if not cont_links_col_check(q_near, q_new, robot, frame, K, link_samples):
+                continue
+        #after all collision checks now we can add new node to our tree path
         #adding node to tree path
         nodes.append(p_new)
         parents.append(idx_near)
@@ -130,6 +170,15 @@ def rrt(frame, start, end, steps):
         #global reachability check (checking if goal can be reached from tree)
         #with current nodes
         if dist(p_new, end) <= 5 and col_check(p_new, end, frame, num):
+            if link:
+                q_goal = robot.inverse_kinematics(end[0],end[1])
+                if q_goal is None:
+                    continue
+                if not links_col_check(q_new, robot, frame, link_samples):
+                    continue
+                if not cont_links_col_check(q_near, q_new, robot, frame, K, link_samples):
+                    continue
+                #last check for goal reachability with no collision
             nodes.append(end)
             parents.append(len(nodes)-2)
             path = build_path(nodes,parents,len(nodes)-1)
