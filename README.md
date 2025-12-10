@@ -45,13 +45,17 @@ https://github.com/nimRobotics/RRT/blob/master/rrt.py
 - Krish worked on the robot_kinematics.py file, implementing FK and IK equations and working on the .pdf file with all of the equations and overall solving process
 
 *12/9* Meeting 2 (3 hours 30 minutes)
-- Ethan wrote RRT algorithm and fixed camera output to work correctly with krish's morphology function. Changed the cv program to handle obstacles as pixels that aren't white and use a white background as the background subtraction method often led to missed object boundaries due to lighting 
+- Ethan wrote RRT algorithm and fixed camera output to work correctly with krish's morphology function. Changed the cv program to handle obstacles as pixels that aren't white and use a white background as the background subtraction method often led to missed object boundaries due to lighting
+- 
 - Krish worked more on FK / IK equation derivations as well as altering the inverse_kinematics function in the robot_kinematics.py file since orientation was not needed and a different approach was used instead. Also started work on a check_link_collisions function that took the robot, theta1-3, and samples per link as arguments and is intended to check all three links for any collisions
 - Ayush did ___
+  
 *12/9* (1 hour)
 - Ethan implemented link collision checking inside RRT function but did not result in many valid paths due to link size and small work space. Can be tested further in proper work area on thursday 12/11. If this does not work we can change RRT to generate path in joint space (theta1, theta2, theta3) rather than work space (x,y). Also added an FPS debugging capability to cv program to allow for step size (distance between RRT nodes) testing. Tuning results showed optimal step size to be 8-15 with an average FPS (new paths generated per second) of 14. For smoothest path if snapshot method is used instead rather than constantly recalculating, we can use step size of 5.
 
-  
+*12/10* (45 minutes)
+- Ethan created most of capture frame function with returning total distance from RRT for a set num of path samples to find the best one. Still working on debugging but general framework is there and is close to implementation. We will use the captured frame to map the obstacles and best path to a 720x720 plot for easier simulation and spline interpolation, rather than the aforementioned method of printing these directly overtop each cv frame.
+
 Left todo:
 - Simulation
 - Link Collision checks (RRT accounts for EE collision)
