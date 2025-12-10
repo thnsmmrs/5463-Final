@@ -45,6 +45,11 @@ if link:
                 return False
         return True
 
+def calc_total_length(path):
+    for (p1,p2) in path:
+        tree_dist = tree_dist + math.hypot(p1[0],p2[0],p1[1],p2[1])
+    return tree_dist
+
 def is_free(x,y,obstacle_mask):
     h,w = obstacle_mask.shape
     if x < 0 or x>=w or y < 0 or y>=h:
@@ -182,5 +187,6 @@ def rrt(frame, start, end, steps, robot):
             nodes.append(end)
             parents.append(len(nodes)-2)
             path = build_path(nodes,parents,len(nodes)-1)
-            return path
+            tree_dist = calc_total_length(path)
+            return path, tree_dist
     return None
