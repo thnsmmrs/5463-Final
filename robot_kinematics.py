@@ -1,7 +1,3 @@
-"""
-Robot Kinematics and Helper Functions to integrate with obstacle_detection.py and rrt.py
-
-"""
 
 import numpy as np
 import cv2
@@ -113,3 +109,4 @@ def check_link_collisions(robot, theta1, theta2, theta3, obstacle_mask, samples_
     positions = robot.forward_kinematics(theta1,theta2,theta3)
     # image dimensions
     image_height,image_width = obstacle_mask.shape
+
