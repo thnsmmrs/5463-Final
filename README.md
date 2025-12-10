@@ -44,6 +44,11 @@ https://github.com/nimRobotics/RRT/blob/master/rrt.py
 *12/9* (1 hour 30 mins)
 - Krish worked on the robot_kinematics.py file, implementing FK and IK equations and working on the .pdf file with all of the equations and overall solving process
 
+*12/9* Meeting 2 (3 hours 30 minutes)
+- Ethan wrote RRT algorithm and fixed camera output to work correctly with krish's morphology function.
+- Krish did ___
+- Ayush did ___
+
 Left todo:
 - Morphology on obstacle mask
 - Contour shape detection
