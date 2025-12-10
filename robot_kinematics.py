@@ -1,10 +1,14 @@
+"""
+Robot Kinematics and Helper Functions to integrate with obstacle_detection.py and rrt.py
+
+"""
 
 import numpy as np
 import cv2
 
 # Robot model
 class Robot3R:
-    def initialize(self, link_lengths, base_position):
+    def __init__(self, link_lengths, base_position):
         self.L1 = link_lengths[0]
         self.L2 = link_lengths[1]
         self.L3 = link_lengths[2]
@@ -31,31 +35,33 @@ class Robot3R:
 
         return [(x0,y0), (x1,y1), (x2,y2), (x3,y3)]
     # IK
-    def inverse_kinematics(self, target_x, target_y, phi = 0):
-        # 3R robot has 3 DOF but only 2D position constraint (x,y) so phi is desired orientation of EE
+    def inverse_kinematics(self, target_x, target_y):
         dx = target_x - self.base_x
         dy = target_y - self.base_y
-        # Position of joint 2 (wrist)
-        wx = dx - self.L3 * np.cos(phi)
-        wy = dy - self.L3 * np.sin(phi)
-        # Distance to joint 2
-        d = np.sqrt(wx**2 + wy**2)
+        d = np.sqrt(dx**2 + dy**2)
+        # 2-link arm (L2 + L3)
+        L2_3 = self.L2 + self.L3
         # Checking reachability of joint 2 (wrist)
-        if d > self.L1 + self.L2 or d < abs(self.L1 - self.L2):
+        if d > self.L1 + L2_3:
             return None
-        # Solving for first two joints
-        cos_theta2 = (d**2 - self.L1**2 - self.L2**2) / (2 * self.L1 * self.L2)
+        # Solving for theta2
+        cos_theta2 = (self.L1**2 + L2_3**2 - d**2) / (2 * self.L1 * L2_3)
         cos_theta2 = np.clip(cos_theta2, -1.0, 1.0)
-        # Elbow-up
         theta2 = np.arccos(cos_theta2)
         # Solving for theta1
-        k1 = self.L1 + self.L2 * np.cos(theta2)
-        k2 = self.L2 * np.sin(theta2)
-        theta1 = np.arctan2(wy,wx) - np.arctan2(k2,k1)
-        # Third joint
-        theta3 = phi - theta1 - theta2
+        k1 = self.L1 + L2_3 * np.cos(theta2)
+        k2 = L2_3 * np.sin(theta2)
+        theta1 = np.arctan2(dy, dx) - np.arctan2(k2, k1)
+        # Joint 2 location
+        x1 = self.base_x + self.L1 * np.cos(theta1)
+        y1 = self.base_y + self.L1 * np.sin(theta1)
+        x2 = x1 + self.L2 * np.cos(theta1 + theta2)
+        y2 = y1 + self.L2 * np.sin(theta1 + theta2)
+        # Angle from joint 2 to target
+        target_angle = np.arctan2(target_y - y2, target_x - x2)
+        # Solving for theta3
+        theta3 = target_angle - (theta1 + theta2)
         return theta1, theta2, theta3
-
 # Morphology for obstacle mask
 def improve_obstacle_mask(fg_mask, min_contour_area = 100):
     """
@@ -88,3 +94,12 @@ def improve_obstacle_mask(fg_mask, min_contour_area = 100):
             cv2.drawContours(mask_clean, [contour], -1, 255, thickness=-1)
     return mask_clean
 
+# Collision detection
+def check_link_collisions(robot, theta1, theta2, theta3, obstacle_mask, samples_per_link=20):
+    """
+    Checking all 3 links, samples_per_link is number of points to check along each link
+    """
+    # joint positions
+    positions = robot.forward_kinematics(theta1,theta2,theta3)
+    # image dimensions
+    image_height,image_width = obstacle_mask.shape
