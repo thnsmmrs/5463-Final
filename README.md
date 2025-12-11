@@ -56,6 +56,9 @@ https://github.com/nimRobotics/RRT/blob/master/rrt.py
 *12/10* (45 minutes)
 - Ethan created most of capture frame function with returning total distance from RRT for a set num of path samples to find the best one. Still working on debugging but general framework is there and is close to implementation. We will use the captured frame to map the obstacles and best path to a 720x720 plot for easier simulation and spline interpolation, rather than the aforementioned method of printing these directly overtop each cv frame.
 
+*12/10* (1 hour)
+- Krish debugged and fixed PD control file and re-uploaded the updated version to the repo, and then separated the morphology and robot_kinematics files to make total integration into the main file easier for later.
+
 Left todo:
 - Simulation
 - Link Collision checks (RRT accounts for EE collision)
