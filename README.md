@@ -46,7 +46,6 @@ https://github.com/nimRobotics/RRT/blob/master/rrt.py
 
 *12/9* Meeting 2 (3 hours 30 minutes)
 - Ethan wrote RRT algorithm and fixed camera output to work correctly with krish's morphology function. Changed the cv program to handle obstacles as pixels that aren't white and use a white background as the background subtraction method often led to missed object boundaries due to lighting
-- 
 - Krish worked more on FK / IK equation derivations as well as altering the inverse_kinematics function in the robot_kinematics.py file since orientation was not needed and a different approach was used instead. Also started work on a check_link_collisions function that took the robot, theta1-3, and samples per link as arguments and is intended to check all three links for any collisions
 - Ayush worked on PD control integration based on PA3 submissions and worked on improvements to the FK/IK equations. Also worked on RRT alternatives such as RRT* based on other Github repositories  
   
@@ -56,8 +55,8 @@ https://github.com/nimRobotics/RRT/blob/master/rrt.py
 *12/10* (45 minutes)
 - Ethan created most of capture frame function with returning total distance from RRT for a set num of path samples to find the best one. Still working on debugging but general framework is there and is close to implementation. We will use the captured frame to map the obstacles and best path to a 720x720 plot for easier simulation and spline interpolation, rather than the aforementioned method of printing these directly overtop each cv frame.
 
-*12/10* (1 hour)
-- Krish debugged and fixed PD control file and re-uploaded the updated version to the repo, and then separated the morphology and robot_kinematics files to make total integration into the main file easier for later.
+*12/10* (1 hour 30 min)
+- Krish debugged and fixed PD control file and re-uploaded the updated version to the repo, and then separated the morphology and robot_kinematics files to make total integration into the main file easier for later. Also did the first two sections of the report for the project (description of task and FK/IK method summary)
 
 Left todo:
 - Simulation
