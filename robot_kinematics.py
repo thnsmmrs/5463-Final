@@ -1,4 +1,4 @@
-
+# Robot kinematics file written by Krish, contains the class Robot3R used in the main file as well as the corresponding forward and inverse kinematic functions
 import numpy as np
 import cv2
 
@@ -68,6 +68,7 @@ class Robot3R:
         # Solving for theta3
         theta3 = target_angle - (theta1 + theta2)
         return theta1, theta2, theta3
+
 
 
 
