@@ -3,6 +3,7 @@ import math
 import random
 from robot_kinematics import Robot3R
 link = False
+
 #RRT function written by Ethan. Inputs include start point, end point, step size
 #which would be like increment length of a tree (distance between points)
 # and the obstacle mask including a white background and obstacles in black
@@ -46,9 +47,12 @@ if link:
         return True
 
 def calc_total_length(path):
-    for (p1,p2) in path:
-        tree_dist = tree_dist + math.hypot(p1[0],p2[0],p1[1],p2[1])
-    return tree_dist
+    total_length = 0.0
+    for i in range(len(path) - 1):
+        x1, y1 = path[i]
+        x2, y2 = path[i + 1]
+        total_length  = total_length + math.hypot(x2 - x1, y2 - y1)
+    return total_length
 
 def is_free(x,y,obstacle_mask):
     h,w = obstacle_mask.shape
@@ -136,7 +140,7 @@ def rrt(frame, start, end, steps, robot):
     nodes = [start]
     parents = [-1]
     num = 50 #sample of collision along edges
-    max_i = 1000 #max iterations in case no path is ever found
+    max_i = 1e20 #max iterations in case no path is ever found
     link_samples = 20 # num samples of link checked 
     K = 10 #interpolation for link edge collision checks 
 
