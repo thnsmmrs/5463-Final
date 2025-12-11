@@ -55,8 +55,10 @@ https://github.com/nimRobotics/RRT/blob/master/rrt.py
 *12/10* (45 minutes)
 - Ethan created most of capture frame function with returning total distance from RRT for a set num of path samples to find the best one. Still working on debugging but general framework is there and is close to implementation. We will use the captured frame to map the obstacles and best path to a 720x720 plot for easier simulation and spline interpolation, rather than the aforementioned method of printing these directly overtop each cv frame.
 
-*12/10* (1 hour 30 min)
+*12/11* Meeting 3 (3 hours 30 min)
 - Krish debugged and fixed PD control file and re-uploaded the updated version to the repo, and then separated the morphology and robot_kinematics files to make total integration into the main file easier for later. Also did the first two sections of the report for the project (description of task and FK/IK method summary)
+- Ethan finished debugging the captured frame code and implemented the spline interpolation function from PA2 to work with the bestPath output. Tuned the sampling number with timer in seconds, results were 20 RRT calculations = 0.8s, 50 RRT calculations = 2s. Currently we are printing the spline path over the created RRT path and also showing the start and end at that one frozen frame. For animation we need to separate these onto a separate plot with the obstacle mask and spline. Still need to worry about obstacle collisions.
+
 
 Left todo:
 - Simulation
