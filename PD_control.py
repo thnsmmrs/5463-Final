@@ -1,5 +1,5 @@
 """
-PD controller file for 3R robot trajectory tracking developed by Krish and Ayush
+PD controller file for 3R robot trajectory tracking
 """
 
 import numpy as np
@@ -47,7 +47,7 @@ def simulate(trajectory, dt = 0.02):
         q_des = q_des_trajectory[i]
         qd_des = qd_des_trajectory[i]
         # Computing control
-        tau = pd_controller((q[i], qd[i], q_des, qd_des))
+        tau = pd_controller(q[i], qd[i], q_des, qd_des)
         tau_initialized[i] = tau
         # Euler Integration as seen in here: https://coecsl.ece.illinois.edu/me446/ME446Lab_2.pdf
         qd[i + 1] = qd[i] + tau * dt
@@ -70,4 +70,3 @@ def analyze_results(time, q_initialized, q_des_trajectory):
     error_degrees = np.rad2deg(error)
     print(f"\nFinal steady-state error (deg): joint 1 = {error_degrees[0]:.6f}, joint 2 = {error_degrees[1]:.6f}, joint 3 = {error_degrees[2]:.6f}")
     print(f"Max final error (deg) = {np.max(error_degrees):.6f}")
-
