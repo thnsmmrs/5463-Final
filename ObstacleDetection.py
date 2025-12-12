@@ -5,6 +5,7 @@ from scipy.interpolate import CubicSpline
 from RRT import rrt
 from robot_kinematics import Robot3R
 from Morphology import improve_obstacle_mask
+from PD_control import simulate, analyze_results
 import time
 
 #I love boolean flags
@@ -13,6 +14,7 @@ dispFPS = False #display FPS debug option for tuning sampling frequency using fp
 #to compare runtimes
 Planned = False
 sim = False
+run_pd = True # True to activate PD control, false to turn off
 capturedOM = None
 robot = Robot3R(link_lengths=[250, 250, 250],base_position=(0, 0))
 #initializing robot params *can be changed
@@ -223,3 +225,4 @@ if sim:
         plt.pause(0.001)
 
     plt.show()
+
