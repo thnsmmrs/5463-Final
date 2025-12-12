@@ -59,9 +59,10 @@ https://github.com/nimRobotics/RRT/blob/master/rrt.py
 - Krish debugged and fixed PD control file and re-uploaded the updated version to the repo, and then separated the morphology and robot_kinematics files to make total integration into the main file easier for later. Also did the first two sections of the report for the project (description of task and FK/IK method summary)
 - Ethan finished debugging the captured frame code and implemented the spline interpolation function from PA2 to work with the bestPath output. Tuned the sampling number with timer in seconds, results were 20 RRT calculations = 0.8s, 50 RRT calculations = 2s. Currently we are printing the spline path over the created RRT path and also showing the start and end at that one frozen frame. For animation we need to separate these onto a separate plot with the obstacle mask and spline. Still need to worry about obstacle collisions.
 
-
+*12/11* (2 hours)
+- Ethan wrote code for simulation that works as expected showing the 3R arm tracing a spline just like we saw in PA2. Some parameters like link lengths still need to be tuned. Link collision checks still not successfuly implemented, joint space still the leading solution but yet to be tried. 
+  
 Left todo:
-- Simulation
 - Link Collision checks (RRT accounts for EE collision)
 
 **TODO:**
