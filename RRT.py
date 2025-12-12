@@ -140,7 +140,7 @@ def rrt(frame, start, end, steps, robot):
     nodes = [start]
     parents = [-1]
     num = 50 #sample of collision along edges
-    max_i = 1e20 #max iterations in case no path is ever found
+    max_i = 10000 #max iterations in case no path is ever found
     link_samples = 20 # num samples of link checked 
     K = 10 #interpolation for link edge collision checks 
 
@@ -183,9 +183,9 @@ def rrt(frame, start, end, steps, robot):
                 q_goal = robot.inverse_kinematics(end[0],end[1])
                 if q_goal is None:
                     continue
-                if not links_col_check(q_new, robot, frame, link_samples):
+                if not links_col_check(q_goal, robot, frame, link_samples):
                     continue
-                if not cont_links_col_check(q_near, q_new, robot, frame, K, link_samples):
+                if not cont_links_col_check(q_new, q_goal, robot, frame, K, link_samples):
                     continue
                 #last check for goal reachability with no collision
             nodes.append(end)

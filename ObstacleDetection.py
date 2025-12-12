@@ -1,18 +1,20 @@
 import cv2
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from scipy.interpolate import CubicSpline
 from RRT import rrt
 from robot_kinematics import Robot3R
 from Morphology import improve_obstacle_mask
 import time
 
-
+#I love boolean flags
 capture = False #creating capture variable to be used for running single frame into RRT
 dispFPS = False #display FPS debug option for tuning sampling frequency using fps
 #to compare runtimes
 Planned = False
-robot = Robot3R(link_lengths=[200, 200, 200],base_position=(10, 10))
+sim = False
+capturedOM = None
+robot = Robot3R(link_lengths=[250, 250, 250],base_position=(0, 0))
 #initializing robot params *can be changed
 goal = None
 path = None
@@ -22,6 +24,9 @@ step_size = 10 #step size for distance between nodes in RRT
 #tuning notes: FPS average remained same between 25-200 and only saw slight
 #drop off at 10. At sample size 5 avg fps = 13 and 10 fps = 15. 25 fps ~= 16
 #global vars needed for scope
+
+def flipCVCoords(x,y): #flipping y coords so plot matches cv coords
+    return int(x), int(600-y)
 
 def SplineInterpolate(path,goal):
     #Inspired by PA2. Spline generation was changed a little bit to sort the array first instead here and not use arc parameters since the data
@@ -53,9 +58,10 @@ cv2.setMouseCallback("Overlay", mouse_callback)
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH,  720)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
 #Locks resolution at 720p (from logi c270 - stays same for all cameras)
 
-start = (50,50)
+start = (5,5)
 #define home position (can be in terms of h,w for ratios)
 
 Threshold = 30  #Threshold identifies what is an object and what is not, 20-30 suggested range from doc but will be testable
@@ -67,10 +73,10 @@ if dispFPS:
     fpsarr = []
 while True:
     ret, frame = cap.read()
-    
     #Reads next frames continously
     if not ret:
         break
+    
     blur = cv2.GaussianBlur(frame, (5,5), 0)
     color_hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
     white = cv2.inRange(color_hsv, (0,0,50), (180,40,255))
@@ -85,7 +91,7 @@ while True:
     vis = cv2.addWeighted(frame, overlayStrength, overlay, 1 - overlayStrength, 0)
     cv2.circle(vis, start, 3, (0,0,255), -1) #params as defined in circle function
     
-    key = cv2.waitKey(1) & 0xFF
+    key = cv2.waitKey(1) & 0xFF #c for capture frame, esc to quit
     if key == ord('c'):
         capture = True
     if key == 27: #ESC to end program
@@ -130,16 +136,17 @@ while True:
         cv2.circle(vis, goal, 3, (0, 0, 255), -1)
         x_spline, y_spline = SplineInterpolate(bestPath,goal)
 
-
-        #polyline solution from AI - change or remove
-        pts = np.stack([x_spline, y_spline], axis=1).astype(np.int32)
-        pts = pts.reshape((-1, 1, 2))
-        cv2.polylines(vis, [pts], isClosed=False, color=(0, 255, 0), thickness=2)
-
-
+        splinePoints = []
+        for i in range(len(x_spline)):
+            xi = int(x_spline[i]) #need to be ints to use cv2.circle and plot them
+            yi = int(y_spline[i])
+            splinePoints.append((xi,yi))
+        for x,y in splinePoints:
+            cv2.circle(vis, (x, y), 1, (0, 255, 0), -1)
 
         cv2.imshow("Overlay",vis)
         cv2.waitKey(0)
+        sim = True
         break
 
     if dispFPS:
@@ -157,4 +164,61 @@ while True:
     cv2.imshow("Overlay", vis)
     #cv2.imshow("Obstacle Mask", obstacle_mask)
 
-    #Ready for simulation
+
+
+    #Simulation portion
+if sim:
+    h,w = capturedOM.shape
+    x_spline_flipped = []
+    y_spline_flipped = []
+    for x, y in zip(x_spline, y_spline):
+        xw, yw = flipCVCoords(x, y)
+        x_spline_flipped.append(xw)
+        y_spline_flipped.append(yw)
+
+    theta1_arr = []
+    theta2_arr = []
+    theta3_arr = []
+
+    for x,y in zip(x_spline, y_spline):
+        x_temp, y_temp = flipCVCoords(x,y)
+        ik_solution = robot.inverse_kinematics(x_temp,y_temp)
+        if ik_solution is None:
+            continue #in case some of the spline is unreachable
+        theta1, theta2, theta3 = ik_solution
+        theta1_arr.append(theta1)
+        theta2_arr.append(theta2)
+        theta3_arr.append(theta3)
+    
+
+    fig,graph = plt.subplots()
+    graph.set_xlim(0,800)
+    graph.set_ylim(0,600)
+    graph.set_aspect('equal') #suggested by TA on PA2
+    plt.title("Obstacle Workspace")
+
+    graph.imshow(capturedOM, cmap ='gray', extent =[0,w,0,h])
+
+    #graph.invert_xaxis #flip coords to match cv window
+    #graph.invert_yaxis
+    graph.plot(x_spline_flipped, y_spline_flipped)
+    link1, = graph.plot([],[])
+    link2, = graph.plot([],[])
+    link3, = graph.plot([],[])
+
+    for t1,t2,t3 in zip(theta1_arr, theta2_arr, theta3_arr):
+        points = robot.forward_kinematics(t1,t2,t3) 
+        #running FK on 3 points at a time - using the full arrays didn't work
+        #for IK or FK
+        p0,p1,p2,p3 = points
+
+        x0,y0 = p0
+        x1,y1 = p1
+        x2,y2 = p2
+        x3,y3 = p3 
+
+        link1.set_data([x0,x1], [y0,y1])
+        link2.set_data([x1,x2], [y1,y2])
+        link3.set_data([x2,x3], [y2,y3])
+        plt.pause(0.001)
+    plt.show()
