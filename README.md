@@ -5,7 +5,8 @@
 ## Setup
 
 ### Requirements
-- **Python 3.8+**
+- macOS/Windows
+- Python 3.8+
 - Webcam (for obstacle detection)
 
 ---
@@ -27,6 +28,19 @@ cd CV-Based-Obstacle-Aware-Planning
 ```bash
 python ObstacleDetection.py
 ```
+---
+**How to use**
+- A live camera feed should open showing the workspace
+- Click anywhere in the window to set the goal position
+- Press 'c' to capture the obstacle frame and run RRT
+- After the path is generated, press any key to animate 3R following planned trajectory
+---
+**Notes**
+- The workspace is fixed at 720p resolution to maintain consistent coordinate mapping'
+- The planner enforces end effector collision avoidance in the workspace\
+- If no valid path is found the user is prompted for a new goal
+- Camera permissions may need to be granted by the system
+
 ---
 **Demonstration Video:**
 
