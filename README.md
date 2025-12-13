@@ -3,6 +3,14 @@
 ## Demonstration Video
 https://github.com/thnsmmrs/CV-Based-Obstacle-Aware-Planning/blob/main/Media/Demo%20Video.mp4
 
+**RRT Path Planning Example**  
+![RRT Path Planning Example](https://github.com/thnsmmrs/CV-Based-Obstacle-Aware-Planning/blob/main/Media/RRT-Examples/RRT-Example4.jpg)
+
+**Workspace Plot and Robot Animation**  
+![Workspace Plot and Robot Animation](https://github.com/thnsmmrs/CV-Based-Obstacle-Aware-Planning/blob/main/Media/Plotting%20and%20Animation%20Example.jpeg)
+
+
+## Goals and Timeline
 
 
 **Project Goal**
