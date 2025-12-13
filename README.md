@@ -128,7 +128,7 @@ https://github.com/nimRobotics/RRT/blob/master/rrt.py
 *12/12* (45 mins)
 - Krish integrated the PD controller file into the main obstacle detection .py file
 
-*12/12* (5 hours 15 mins)
+*12/12* (5 hours 45 mins)
 - Ethan debugged PD controller code (unsuccesful) and created plots for steady state error vs time. Generally PD controller returned 1-2 degrees of error average across theta 1 and theta 2, showing noticeable deviations of the end effector from generated spline, so PD control plots were not used for final demonstration. Link collisions in joint space not attempted, did not know the best approach.
 - Ethan filmed demonstration video, finalized sections of final report, prepped repo and submitted files.
 
