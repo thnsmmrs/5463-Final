@@ -105,8 +105,8 @@ Visualization *Final Deliverable*
  - Show obstacles, path, robot pose
 
 Extensions
-  - Optimize spline params to reduce peak acceleration and jerk (hardware preservation)
+  - Optimize spline params to reduce peak acceleration and jerk (hardware preservation) ✔
   - Dynamic obstacles with known (or unknown) motion
-  - Implement re-planning at fixed frequency based on collision detecting
+  - Implement re-planning at fixed frequency based on collision detecting ✔
   - Basic hardware implementation (2 or 3R) or simulated 3D env
   - Extra joint var implementation at 5 or 6R, or adding other joint types
