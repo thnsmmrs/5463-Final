@@ -36,8 +36,8 @@ python ObstacleDetection.py
 - After the path is generated, press any key to animate 3R following planned trajectory
 ---
 **Notes**
-- The workspace is fixed at 720p resolution to maintain consistent coordinate mapping'
-- The planner enforces end effector collision avoidance in the workspace\
+- The workspace is fixed at 720p resolution to maintain consistent coordinate mapping
+- The planner enforces end effector collision avoidance in the workspace
 - If no valid path is found the user is prompted for a new goal
 - Camera permissions may need to be granted by the system
 
