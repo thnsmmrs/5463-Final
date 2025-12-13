@@ -194,20 +194,26 @@ if sim:
 
     # Creating trajectory for PD controller
     trajectory = [(theta1_arr[i], theta2_arr[i], theta3_arr[i])
-                  for i in range(len(theta1_arr))]
+    for i in range(len(theta1_arr))]
     # PD Trajectory Tracking
-if run_pd:
+    if run_pd:
         time, q, qd, tau_initialized, q_des_trajectory, qd_des_trajectory = simulate(trajectory, dt=0.02)
     # Analyze tracking and using tracked trajectory for simulation
-    analyze_results(time, q, q_des_trajectory)
-    theta1_arr = q[:, 0].tolist()
-    theta2_arr = q[:, 1].tolist()
-    theta3_arr = q[:, 2].tolist()
-    print(f" PD tracking complete ({len(q)} points)")
-else:
-    print("\n Skipping PD Control")
-    
+        errors = analyze_results(q, q_des_trajectory)
+        theta1_arr = q[:, 0].tolist()
+        theta2_arr = q[:, 1].tolist()
+        theta3_arr = q[:, 2].tolist()
+        fig,err = plt.subplots()
+        err.plot(time, errors[:,0], label="Theta 1")
+        err.plot(time, errors[:,1], label="Theta 2")
+        err.plot(time, errors[:,2], label="Theta 3")
+        err.legend()
+        err.set_title("Steady State Error vs Time")
+        err.set_xlabel("Time (s)")
+        err.set_ylabel("Error (deg)")
+
     fig,graph = plt.subplots()
+    
     graph.set_xlim(0,800)
     graph.set_ylim(0,600)
     graph.set_aspect('equal') #suggested by TA on PA2

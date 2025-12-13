@@ -1,7 +1,3 @@
-"""
-PD controller file for 3R robot trajectory tracking
-"""
-
 import numpy as np
 
 # PD gains (Kp, Kd), *can be tuned to test - note for us*, using PA3 as a reference
@@ -15,10 +11,6 @@ Kd_matrix = np.diag([Kd, Kd, Kd])
 
 # PD controller function, using PA3 as a reference
 def pd_controller(q, qd, q_des, qd_des):
-    """
-    q being the joint angles (theta1-3), qd being current joint velocities, q_des being desired joint angles,
-    qd_des being desired joint velocities
-    """
     e = q_des - q # Position error
     ed = qd_des - qd # Velocity error
     # PD control law
@@ -58,15 +50,8 @@ def simulate(trajectory, dt = 0.02):
     return time, q, qd, tau_initialized, q_des_trajectory, qd_des_trajectory
 
 # Analyze tracking errors, reference to PA3
-def analyze_results(time, q_initialized, q_des_trajectory):
-    # Steady-state error
-    final_time_window = 0.2
-    idxs = np.where(time >= time[-1] - final_time_window)[0]
-    # Final desired and actual positions
-    final_des = q_des_trajectory[-1]
-    final_act = q_initialized[-1]
-    # Calculating error in degrees
-    error = np.abs(final_des - final_act)
+def analyze_results(q_initialized, q_des_trajectory):
+    error = q_des_trajectory - q_initialized
     error_degrees = np.rad2deg(error)
-    print(f"\nFinal steady-state error (deg): joint 1 = {error_degrees[0]:.6f}, joint 2 = {error_degrees[1]:.6f}, joint 3 = {error_degrees[2]:.6f}")
-    print(f"Max final error (deg) = {np.max(error_degrees):.6f}")
+    return error_degrees
+
